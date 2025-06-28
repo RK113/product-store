@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Store</title>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <style>
+  * { box-sizing: border-box; padding: 0; margin: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f7f7f7;
+  }
+  header {
+    background: linear-gradient(to right, #1abc9c, #16a085);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  #heading {
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+.cart-count {
+  background: #e74c3c;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  float: right;
+  margin-top: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease;
+}
+
+.cart-count:hover {
+  background: #c0392b;
+}
+
+  .menu-container { position: relative; }
+.menu-btn {
+  background: #ffffff;
+  color: #16a085;
+  padding: 10px 15px;
+  border: 2px solid #16a085;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.menu-btn:hover {
+  background: #16a085;
+  color: white;
+}
+
+.menu div:hover {
+  background-color: #ecfdfd;
+  color: #16a085;
+  font-weight: bold;
+}
+
+  .menu {
+    display: none;
+    font-size: 16px;
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: white;
+    color: black;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.3s ease;
+  }
+  .menu div {
+    width: 150px;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+
+  footer {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 40px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    font-size: 14px;
+    text-align: center;
+    color: #555;
+  }
+  footer h4 {
+    margin-bottom: 10px;
+    color: #16a085;
+  }
+  footer p {
+    margin-bottom: 8px;
+  }
+.controls {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.controls input[type="text"] {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px 14px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border 0.3s ease;
+}
+
+.controls input[type="text"]:focus {
+  border-color: #3498db;
+  outline: none;
+  background-color: #f0faff;
+}
+
+.controls label {
+  font-size: 16px;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.controls select {
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  transition: border 0.3s ease;
+}
+
+.controls select:focus {
+  border-color: #3498db;
+  outline: none;
+  background-color: #f0faff;
+}
+    .product {
+      width: 120px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .product:hover { transform: scale(1.03); }
+    .product img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 6px;
+    }
+    .product h3 { font-size: 13px; margin: 4px 0 2px; }
+    .product p { font-size: 11px; margin: 0; color: #555; }
+    button {
+      padding: 8px 12px;
+      margin: 10px 0;
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      background-color: #3498db;
+      color: white;
+    }
+    .remove-btn {
+      background: #e74c3c;
+    }
+    .remove-btn:hover {
+      background: #c0392b;
+    }
+    .total-price {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .section-title {
+      margin: 20px 0 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    #fruit-list, #vegetable-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+.product-detail {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.product-detail img {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.product-detail h3 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.product-detail p {
+  font-size: 16px;
+  color: #555;
+  margin: 6px 0;
+}
+
+.product-detail .buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.product-detail button {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.product-detail button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.product-detail button:nth-child(1) {
+  background-color: #3498db;
+  color: white;
+}
+
+.product-detail button:nth-child(2) {
+  background-color: #4d0099;
+  color: white;
+}
+
+.product-detail a button {
+  background-color: #25D366;
+  color: white;
+}
+
+.product-detail button:nth-child(4) {
+  background-color: #e74c3c;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  </style>
+</head>
+<body>
+
+<header>
+  <h2 onclick="showProductList(true)" id="heading">🛍️ Product Store</h2>
+  <div class="menu-container">
+    <button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
+    <div class="menu" id="menu">
+      <div onclick="closeMenu(); showProductList(true)">🏠 Home</div>
+      <div onclick="closeMenu(); showCart()">🛒 View Cart</div>
+      <div onclick="closeMenu(); alert('This is a demo store. Created by Vishvarajsinh.')">ℹ️ About</div>
+    </div>
+  </div>
+</header>
+
+<div class="cart-count" id="cart-count" onclick="showCart()">Cart (0)</div>
+
+<div class="controls">
+ <input type="text" id="searchInput" placeholder="Search products..." /><br />
+<label for="priceFilter">Filter</label>  <select id="priceFilter">
+    <option value="all">All Prices</option>
+    <option value="100">Below ₹100</option>
+    <option value="150">Below ₹150</option>
+    <option value="200">Below ₹200</option>
+  </select>
+</div>
+
+<div id="product-list">
+  <div class="section-title">🍎 Fruits</div>
+  <div id="fruit-list"></div>
+  <button id="load-more-fruits" onclick="loadMore('fruit')">Load More Fruits</button>
+
+  <div class="section-title">🥦 Vegetables</div>
+  <div id="vegetable-list"></div>
+  <button id="load-more-vegetables" onclick="loadMore('vegetable')">Load More Vegetables</button>
+</div>
+
+<div id="product-detail"></div>
+<div id="cart-view" style="display:none;"></div>
+
+<footer>
+  <h4>About This Store</h4>
+  <p>This is a demo product store where you can browse and view items like fruits and vegetables.</p>
+
+  <h4>Contact Us</h4>
+  <p>Email: <a href="mailto:support@demo.com">support@demo.com</a></p>
+  <p>Phone: +91-12345-67890</p>
+
+  <div style="margin-top: 15px;">
+    <a href="https://wa.me/911234567890" target="_blank" title="WhatsApp">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" style="width: 30px; margin: 0 10px; filter: invert(35%) sepia(88%) saturate(747%) hue-rotate(91deg) brightness(97%) contrast(97%);">
+    </a>
+    <a href="https://www.instagram.com/yourpage" target="_blank" title="Instagram">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" style="width: 30px; margin: 0 10px; filter: invert(24%) sepia(61%) saturate(7499%) hue-rotate(330deg) brightness(94%) contrast(104%);">
+    </a>
+    <a href="https://www.facebook.com/yourpage" target="_blank" title="Facebook">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" style="width: 30px; margin: 0 10px; filter: invert(28%) sepia(88%) saturate(479%) hue-rotate(181deg) brightness(94%) contrast(91%);">
+    </a>
+  </div>
+
+  <p style="margin-top: 10px;">🧑‍💻 Developed by <strong>Vishvarajsinh</strong> • &copy; 2025</p>
+</footer>
+
+
+
+<script>
+const products = [
+  { id: 1, name: 'Apple', price: 80, description: 'Fresh red apple', image: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg', type: 'fruit' },
+  { id: 2, name: 'Banana', price: 50, description: 'Yellow ripe banana', image: 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Banana-Single.jpg', type: 'fruit' },
+  { id: 3, name: 'Orange', price: 110, description: 'Juicy orange fruit', image: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Orange-Fruit-Pieces.jpg', type: 'fruit' },
+  { id: 4, name: 'Grapes', price: 140, description: 'Green seedless grapes', image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Kyoho-grape.jpg', type: 'fruit' },
+  { id: 5, name: 'Mango', price: 180, description: 'Sweet Alphonso mango', image: 'https://upload.wikimedia.org/wikipedia/commons/9/90/Hapus_Mango.jpg', type: 'fruit' },
+  { id: 6, name: 'Tomato', price: 40, description: 'Fresh red tomatoes', image: 'https://upload.wikimedia.org/wikipedia/commons/8/88/Bright_red_tomato_and_cross_section02.jpg', type: 'vegetable' },
+  { id: 7, name: 'Potato', price: 30, description: 'Clean brown potatoes', image: 'https://img.freepik.com/free-photo/potato-vegetables-isolated_1203-6930.jpg', type: 'vegetable' },
+  { id: 8, name: 'Cabbage', price: 45, description: 'Green cabbage head', image: 'https://img.freepik.com/premium-photo/savoy-cabbage-isolated-white-background_980000-444.jpg', type: 'vegetable' }
+];
+
+let cart = [];
+let visibleCount = { fruit: 0, vegetable: 0 };
+const pageSize = 3;
+
+const cartCountEl = document.getElementById('cart-count');
+const fruitListEl = document.getElementById('fruit-list');
+const vegetableListEl = document.getElementById('vegetable-list');
+const productListEl = document.getElementById('product-list');
+const productDetailEl = document.getElementById('product-detail');
+const cartViewEl = document.getElementById('cart-view');
+const searchInput = document.getElementById('searchInput');
+const priceFilter = document.getElementById('priceFilter');
+
+function toggleMenu() {
+  const menu = document.getElementById('menu');
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+function closeMenu() {
+  document.getElementById('menu').style.display = 'none';
+}
+
+
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+function loadCart() {
+  const saved = localStorage.getItem('cart');
+  cart = saved ? JSON.parse(saved) : [];
+  updateCartCount();
+  
+}
+function updateCartCount() {
+  cartCountEl.textContent = `Cart (${cart.length})`;
+}
+
+function showProductList(reset = true) {
+  history.replaceState({}, '', location.pathname);
+  productDetailEl.style.display = 'none';
+  cartViewEl.style.display = 'none';
+  productListEl.style.display = 'block';
+
+  if (reset) {
+    visibleCount = { fruit: 0, vegetable: 0 };
+    fruitListEl.innerHTML = '';
+    vegetableListEl.innerHTML = '';
+  }
+
+  loadMore('fruit', reset);
+  loadMore('vegetable', reset);
+}
+
+function loadMore(type, reset = false) {
+  const search = searchInput.value.toLowerCase();
+  const priceLimit = priceFilter.value;
+
+  const filtered = products.filter(p =>
+    p.type === type &&
+    p.name.toLowerCase().startsWith(search) &&(priceLimit === 'all' || p.price <= parseInt(priceLimit))
+  );
+
+  const start = visibleCount[type];
+  const itemsToShow = filtered.slice(start, start + pageSize);
+  const listEl = (type === 'fruit') ? fruitListEl : vegetableListEl;
+  const btnEl = document.getElementById(`load-more-${type}s`);
+
+  itemsToShow.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" />
+      <h3>${p.name}</h3>
+      <p>Price: ₹${p.price}</p>
+    `;
+    div.onclick = () => {
+      showProductDetail(p.id);
+      history.pushState({ id: p.id }, '', `?product=${p.id}`);
+    };
+    listEl.appendChild(div);
+  });
+
+  visibleCount[type] += itemsToShow.length;
+  btnEl.style.display = (visibleCount[type] >= filtered.length) ? 'none' : 'inline-block';
+  if (filtered.length === 0 && reset) listEl.innerHTML = '<p>No products found.</p>';
+}
+
+function showProductDetail(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  const shareUrl = `${location.origin}${location.pathname}?product=${id}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${p.name} - ₹${p.price}\n${p.description}\n${shareUrl}`)}`;
+
+  const isInCart = cart.includes(p.id);
+  const addButton = isInCart
+    ? `<button style="background: #2ecc71;">✅ Already in Cart</button>`
+    : `<button onclick="addToCart(${p.id})">🛒 Add to Cart</button>`;
+
+  productListEl.style.display = 'none';
+  cartViewEl.style.display = 'none';
+  productDetailEl.style.display = 'block';
+
+  productDetailEl.innerHTML = `
+    <div class="product-detail">
+      <img src="${p.image}" alt="${p.name}" style="width:100%; border-radius:10px;" />
+      <h3>${p.name}</h3>
+      <p>${p.description}</p>
+      <p>Price: ₹${p.price}</p>
+      
+<div>
+  <label for="qty" style="font-weight:bold;">Quantity:</label>
+  <input type="number" id="qty" min="1" value="1" style="width: 60px; padding: 6px; margin: 0 10px; border-radius: 5px; border: 1px solid #ccc;" onchange="updateTotalPrice(${p.price})"/>
+  <span id="total-price" style="font-weight:bold;">Total: ₹${p.price}</span></div><div class="buttons">${addButton}  <button onclick="copyLink(${p.id})">🔗 Copy Link</button><a href="#" onclick="shareOnWhatsApp(${id})"><button style="background: #25D366;">🛍️ WhatsApp</button></a>  <button onclick="goBack()">Back</button>
+</div>
+
+      
+    </div>`;
+}
+
+function updateTotalPrice(unitPrice) {
+  const qty = parseInt(document.getElementById('qty').value) || 1;
+  const total = unitPrice * qty;
+  document.getElementById('total-price').textContent = `Total: ₹${total}`;
+}
+
+function shareOnWhatsApp(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const qty = parseInt(document.getElementById('qty').value) || 1;
+  const total = qty * p.price;
+  const shareUrl = `${location.origin}${location.pathname}?product=${id}`;
+  const text = `${p.name}\nQty: ${qty}\nPrice per item: ₹${p.price}\nTotal: ₹${total}\n${p.description}\n${shareUrl}`;
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(whatsappUrl, '_blank');
+}
+
+
+function addToCart(id) {
+  if (!cart.includes(id)) {
+    cart.push(id);
+    saveCart();
+    updateCartCount();
+  }
+  showProductDetail(id); // Refresh after any click
+}
+
+function removeFromCart(index) {
+  if (index >= 0 && index < cart.length) {
+    const confirmed = confirm("Are you sure you want to remove this item from the cart?");
+    if (confirmed) {
+      cart.splice(index, 1);
+      saveCart();
+      updateCartCount();
+      showCart();
+    }
+  }
+}
+
+function copyLink(id) {
+  const url = `${location.origin}${location.pathname}?product=${id}`;
+  navigator.clipboard.writeText(url).then(() => alert("Link copied!"));
+}
+function goBack() {
+  history.back();
+}
+function getQueryParam(key) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(key);
+}
+
+window.onpopstate = function () {
+  const productId = getQueryParam('product');
+  const isCart = getQueryParam('cart');
+
+  if (productId) {
+    showProductDetail(parseInt(productId));
+  } else if (isCart !== null) {
+    showCart();
+  } else {
+    showProductList(true); // Go to home
+  }
+};
+
+searchInput.addEventListener('input', () => showProductList(true));
+priceFilter.addEventListener('change', () => showProductList(true));
+
+loadCart();
+const initialProduct = getQueryParam('product');
+if (initialProduct) {
+  showProductDetail(parseInt(initialProduct));
+} else {
+  showProductList(true);
+}
+
+function showCart() {
+  history.pushState({ view: 'cart' }, '', '?cart=true');
+  productListEl.style.display = 'none';
+  productDetailEl.style.display = 'none';
+  cartViewEl.style.display = 'block';
+
+  if (cart.length === 0) {
+    cartViewEl.innerHTML = '<p>Your cart is empty.</p>';
+    return;
+  }
+
+  let total = 0;
+  cartViewEl.innerHTML = '<h3>Your Cart:</h3>';
+
+  cart.forEach((id, index) => {
+    const p = products.find(prod => prod.id === id);
+    if (p) {
+      total += p.price;
+      cartViewEl.innerHTML += `
+        <div class="cart-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; border-radius: 10px; padding: 10px;">
+          <div onclick="showProductDetail(${p.id}); history.pushState({ id: ${p.id} }, '', '?product=${p.id}')" style="display: flex; align-items: center; gap: 10px; flex-grow: 1; cursor: pointer;">
+            <img src="${p.image}" alt="${p.name}" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+            <div>
+              <strong>${p.name}</strong><br>
+              <span>₹${p.price}</span>
+            </div>
+          </div>
+          <button class="remove-btn" onclick="removeFromCart(${index})">🗑 Remove</button>
+        </div>
+      `;
+    }
+  });
+
+  cartViewEl.innerHTML += `<div class="total-price">Total: ₹${total}</div>`;
+  cartViewEl.innerHTML += `<button onclick="showProductList(true)">⬅ Continue Shopping</button>`;
+}
+
+// Close menu if user clicks outside
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('menu');
+  const menuBtn = document.querySelector('.menu-btn');
+  if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
+    menu.style.display = 'none';
+  }
+});
+
+</script>
+
+</body>
+</html>
