@@ -304,22 +304,28 @@
 
 <div class="controls">
  <input type="text" id="searchInput" placeholder="Search products..." /><br />
-<label for="priceFilter">Filter</label>  <select id="priceFilter">
-    <option value="all">All Prices</option>
-    <option value="100">Below ₹100</option>
-    <option value="150">Below ₹150</option>
-    <option value="200">Below ₹200</option>
-  </select>
+<button onclick="toggleFilterPopup()" style="padding: 10px 16px; border-radius: 8px; background: #16a085; color: white; font-weight: bold;">🔍 Filter</button>
+
+<div id="filter-popup" style="display:none; position: fixed; top: 20%; left: 50%; transform: translateX(-50%); background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 10; max-width: 300px;">
+  <h3 style="margin-bottom: 10px;">Filter Options</h3>
+
+  <strong>Sort by Price:</strong><br>
+  <label><input type="radio" name="sort" value="low"> Low to High</label><br>
+  <label><input type="radio" name="sort" value="high"> High to Low</label><br><br>
+
+  <strong>Product Type:</strong><br>
+  <label><input type="checkbox" value="fruit" class="type-filter"> Fruit</label><br>
+  <label><input type="checkbox" value="vegetable" class="type-filter"> Vegetable</label><br><br>
+
+  <button onclick="applyFilter()" style="padding: 8px 12px; background: #3498db; color: white; border: none; border-radius: 6px;">Apply</button>
+  <button onclick="toggleFilterPopup()" style="padding: 8px 12px; background: #ccc; margin-left: 10px; border: none; border-radius: 6px;">Close</button>
+</div>
+
 </div>
 
 <div id="product-list">
-  <div class="section-title">🍎 Fruits</div>
-  <div id="fruit-list"></div>
-  <button id="load-more-fruits" onclick="loadMore('fruit')">Load More Fruits</button>
-
-  <div class="section-title">🥦 Vegetables</div>
-  <div id="vegetable-list"></div>
-  <button id="load-more-vegetables" onclick="loadMore('vegetable')">Load More Vegetables</button>
+<div id="all-products" style="display: flex; flex-wrap: wrap; gap: 15px;"></div>
+<button id="load-more-all" onclick="loadMore()">Load More</button>
 </div>
 
 <div id="product-detail"></div>
@@ -363,6 +369,28 @@ const products = [
 ];
 
 let cart = [];
+let filterState = {
+  sort: null,
+  types: []
+};
+
+function toggleFilterPopup() {
+  const popup = document.getElementById('filter-popup');
+  popup.style.display = popup.style.display === 'none' ? 'block' : 'none';
+}
+
+function applyFilter() {
+  const sortValue = document.querySelector('input[name="sort"]:checked');
+  const selectedTypes = Array.from(document.querySelectorAll('.type-filter:checked')).map(cb => cb.value);
+
+  filterState.sort = sortValue ? sortValue.value : null;
+  filterState.types = selectedTypes;
+
+  toggleFilterPopup();
+  showProductList(true);
+}
+
+
 let visibleCount = { fruit: 0, vegetable: 0 };
 const pageSize = 3;
 
@@ -404,29 +432,36 @@ function showProductList(reset = true) {
   cartViewEl.style.display = 'none';
   productListEl.style.display = 'block';
 
+  const allProductsEl = document.getElementById('all-products');
   if (reset) {
-    visibleCount = { fruit: 0, vegetable: 0 };
-    fruitListEl.innerHTML = '';
-    vegetableListEl.innerHTML = '';
+    visibleCount = { all: 0 };
+    allProductsEl.innerHTML = '';
   }
 
-  loadMore('fruit', reset);
-  loadMore('vegetable', reset);
+  loadMore(reset);
 }
 
-function loadMore(type, reset = false) {
+
+function loadMore(reset = false) {
   const search = searchInput.value.toLowerCase();
-  const priceLimit = priceFilter.value;
+  let filtered = products.filter(p =>
+  p.name.toLowerCase().startsWith(search) &&
+  (filterState.types.length === 0 || filterState.types.includes(p.type))
+);
 
-  const filtered = products.filter(p =>
-    p.type === type &&
-    p.name.toLowerCase().startsWith(search) &&(priceLimit === 'all' || p.price <= parseInt(priceLimit))
-  );
+if (filterState.sort === 'low') {
+  filtered.sort((a, b) => a.price - b.price);
+} else if (filterState.sort === 'high') {
+  filtered.sort((a, b) => b.price - a.price);
+}
 
-  const start = visibleCount[type];
+
+  if (!visibleCount.all) visibleCount.all = 0;
+
+  const start = visibleCount.all;
   const itemsToShow = filtered.slice(start, start + pageSize);
-  const listEl = (type === 'fruit') ? fruitListEl : vegetableListEl;
-  const btnEl = document.getElementById(`load-more-${type}s`);
+  const listEl = document.getElementById('all-products');
+  const btnEl = document.getElementById('load-more-all');
 
   itemsToShow.forEach(p => {
     const div = document.createElement('div');
@@ -443,10 +478,14 @@ function loadMore(type, reset = false) {
     listEl.appendChild(div);
   });
 
-  visibleCount[type] += itemsToShow.length;
-  btnEl.style.display = (visibleCount[type] >= filtered.length) ? 'none' : 'inline-block';
-  if (filtered.length === 0 && reset) listEl.innerHTML = '<p>No products found.</p>';
+  visibleCount.all += itemsToShow.length;
+  btnEl.style.display = (visibleCount.all >= filtered.length) ? 'none' : 'inline-block';
+
+  if (filtered.length === 0 && reset) {
+    listEl.innerHTML = '<p>No products found.</p>';
+  }
 }
+
 
 function showProductDetail(id) {
   const p = products.find(x => x.id === id);
@@ -546,7 +585,6 @@ window.onpopstate = function () {
 };
 
 searchInput.addEventListener('input', () => showProductList(true));
-priceFilter.addEventListener('change', () => showProductList(true));
 
 loadCart();
 const initialProduct = getQueryParam('product');
@@ -557,7 +595,9 @@ if (initialProduct) {
 }
 
 function showCart() {
+  if (location.search !== '?cart=true') {
   history.pushState({ view: 'cart' }, '', '?cart=true');
+}
   productListEl.style.display = 'none';
   productDetailEl.style.display = 'none';
   cartViewEl.style.display = 'block';
@@ -601,8 +641,45 @@ document.addEventListener('click', function(event) {
     menu.style.display = 'none';
   }
 });
+function saveFilters() {
+  sessionStorage.setItem('filters', JSON.stringify(filterState));
+}
+
+function loadFilters() {
+  const saved = sessionStorage.getItem('filters');
+  if (saved) {
+    filterState = JSON.parse(saved);
+    applyFiltersToUI();
+  }
+}
+
+function applyFiltersToUI() {
+  if (filterState.sort) {
+    const sortRadio = document.querySelector(`input[name="sort"][value="${filterState.sort}"]`);
+    if (sortRadio) sortRadio.checked = true;
+  }
+
+  document.querySelectorAll('.type-filter').forEach(cb => {
+    cb.checked = filterState.types.includes(cb.value);
+  });
+}
+
+function applyFilter() {
+  const sortValue = document.querySelector('input[name="sort"]:checked');
+  const selectedTypes = Array.from(document.querySelectorAll('.type-filter:checked')).map(cb => cb.value);
+
+  filterState.sort = sortValue ? sortValue.value : null;
+  filterState.types = selectedTypes;
+
+  saveFilters(); // 👈 Save to sessionStorage
+  toggleFilterPopup();
+  showProductList(true);
+}
+
+
+loadCart();
+loadFilters(); // 👈 Load filters on page load
 
 </script>
-
 </body>
 </html>
