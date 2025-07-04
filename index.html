@@ -14,7 +14,12 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-* { box-sizing: border-box; padding: 0; margin: 0; }
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0; 
+  user-select: none;
+}
 body {
  font-family: 'Segoe UI', sans-serif;
  margin: 0;
@@ -59,7 +64,7 @@ header {
 
 
 .cart-count {
-background: #e74c3c;
+background: black;
 color: white;
 padding: 6px 14px;
 border-radius: 20px;
@@ -71,9 +76,6 @@ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 transition: background 0.3s ease;
 }
 
-.cart-count:hover {
-background: #c0392b;
-}
 
 .menu-container { position: relative; }
 .menu-btn {
@@ -123,7 +125,7 @@ footer {
  height: auto;
  background: linear-gradient(to bottom right, #e2e3e2, #eeeeee);
  border-radius: 10px;
- padding: 20px;
+ padding: 10px;
  margin-top: 40px;
  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
  font-size: 14px;
@@ -737,7 +739,7 @@ transition: opacity 0.3s ease;
  <div>
  <img id="fl" src="fl0.png" alt="Nani Patola Creation">
  <h4>About This Store</h4>
- <p>This is a demo product store where you can browse and view items like fruits, vegetables, sarees, and more.</p>
+ <p>In this shop, Patola sarees, dupattas, and chaniyacholis are available. In this shop, various Patola items are available such as Patola handbags, potli bags (wallets), and Patola wall hangings for home decoration. Here, Patola traditional clothes and western clothes will also be available in this shop. Here you will find kurta Nehru jackets for men as well as pocket squares and shirts with various patola designs.<br /><b>Designer:- Gohil harshad</b></p>
  </div>
 
  <!-- COLLECTION -->
@@ -747,11 +749,9 @@ transition: opacity 0.3s ease;
  <i class="fas fa-chevron-down arrow-icon"></i>
  </div>
  <div id="collection-list" class="footer-list" style="display: none;">
- <p><a href="#" onclick="filterByFooter('saree')">Single Ikat Saree</a></p>
- <p><a href="#" onclick="filterByFooter('kurta')">Kurta</a></p>
- <p><a href="#" onclick="filterByFooter('dupatta')">Dupatta</a></p>
- <p><a href="#" onclick="filterByFooter('fruit')">Fruits</a></p>
- <p><a href="#" onclick="filterByFooter('vegetable')">Vegetables</a></p>
+ <p><a href="#" onclick="filterByFooter('saree')">Female patola product</a></p>
+ <p><a href="#" onclick="filterByFooter('kurta')">Men's patola product</a></p>
+ <p><a href="#" onclick="filterByFooter('dupatta')">Patola accessories</a></p>
  </div>
  </div>
 
@@ -762,12 +762,13 @@ transition: opacity 0.3s ease;
  <i class="fas fa-chevron-down arrow-icon"></i>
  </div>
  <div id="connect-list" class="footer-list" style="display: none;">
- <p>Email: <a href="mailto:support@demo.com">support@demo.com</a></p>
- <p>Phone: +91-12345-67890</p>
+ <p>Email: <a href="mailto:Gohilharshad7097@gmail.com">
+  Gohilharshad7097@gmail.com</a></p>
+ <p>Phone: <a href="tel:+918780867452">+918780867452</a></p>
  <div>
- <a href="https://wa.me/911234567890" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" style="width: 30px; margin: 5px;"></a>
- <a href="https://instagram.com/yourpage" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" style="width: 30px; margin: 5px;"></a>
- <a href="https://facebook.com/yourpage" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" style="width: 30px; margin: 5px;"></a>
+ <a href="https://wa.me/918780867452" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" style="width: 30px; margin: 5px;"></a>
+ <a href="https://www.instagram.com/neni_patola_creation?igsh=MTcyMmdpd2t0cHFrdA==" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" style="width: 30px; margin: 5px;"></a>
+<!-- <a href="https://facebook.com/yourpage" target="_blank"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" style="width: 30px; margin: 5px;"></a>-->
  </div>
  </div>
  </div>
@@ -1178,9 +1179,6 @@ function showProductDetail(id) {
 const p = products.find(x => x.id === id);
 if (!p) return;
 
-const shareUrl = `${location.origin}${location.pathname}?product=${id}`;
-const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${p.name} - ₹${p.price}\n${p.description}\n${shareUrl}`)}`;
-
 const isInCart = cart.includes(p.id);
 const addButton = isInCart
  ? `<button style="background: #2ecc71;">✅ Already in Cart</button>`
@@ -1287,17 +1285,6 @@ function updateTotalPrice(unitPrice) {
 const qty = parseInt(document.getElementById('qty').value) || 1;
 const total = unitPrice * qty;
 document.getElementById('total-price').textContent = `Total: ₹${total}`;
-}
-
-function shareOnWhatsApp(id) {
-const p = products.find(x => x.id === id);
-if (!p) return;
-const qty = parseInt(document.getElementById('qty').value) || 1;
-const total = qty * p.price;
-const shareUrl = `${location.origin}${location.pathname}?product=${id}`;
-const text = `${p.name}\nQty: ${qty}\nPrice per item: ₹${p.price}\nTotal: ₹${total}\n${p.description}\n${shareUrl}`;
-const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-window.open(whatsappUrl, '_blank');
 }
 
 
@@ -1553,8 +1540,8 @@ function shareOnWhatsApp(id, qtyInputId = 'qty') {
   const qty = parseInt(document.getElementById(qtyInputId)?.value) || 1;
   const total = qty * p.price;
   const shareUrl = `${location.origin}${location.pathname}?product=${id}`;
-  const text = `${p.name}\nQty: ${qty}\nPrice: ₹${p.price}\nTotal: ₹${total}\n${p.description}\n${shareUrl}`;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  const text = `${p.name}\nQty: ${qty}\nPrice: ₹${p.price}\nTotal: ₹${total}\n\n\n${p.description}\n\n\n${shareUrl}`;
+  window.open(`https://wa.me/918780867452?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 function showFavorites() {
