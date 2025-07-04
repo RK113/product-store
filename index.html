@@ -1345,16 +1345,19 @@ return urlParams.get(key);
 window.onpopstate = function () {
   const productId = getQueryParam('product');
   const isCart = getQueryParam('cart');
+  const isFavorites = getQueryParam('favorites');
 
   if (productId) {
     const p = products.find(prod => prod.id === parseInt(productId));
-    showProductDetail(parseInt(productId));
-    if (p) updateBreadcrumb(p.type, p.name);
+    if (p) {
+      showProductDetail(parseInt(productId));
+      updateBreadcrumb(p.type, p.name);
+    }
   } else if (isCart !== null) {
     showCart();
     document.getElementById('breadcrumb').innerHTML = '';
-}else if (isFavorites !== null) {
-  showFavorites();
+  } else if (isFavorites !== null) {
+    showFavorites();
   } else {
     showProductList(true);
     document.getElementById('breadcrumb').innerHTML = '';
